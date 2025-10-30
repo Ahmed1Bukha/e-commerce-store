@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## e-commerce-store
 
-## Getting Started
+A simple e-commerce storefront built with Next.js App Router, React, TypeScript, Tailwind CSS, and Zustand. Products are fetched from `fakestoreapi.com` by default and the cart is persisted in `localStorage`.
 
-First, run the development server:
+### Tech stack
+- **Framework**: Next.js 16 (App Router)
+- **UI**: React 19, Tailwind CSS 4
+- **State**: Zustand (persist middleware)
+- **Lang/Tooling**: TypeScript, ESLint
 
+### Features
+- **Product listing and details** via `fakestoreapi.com`
+- **Client-side cart** with add/remove/clear, persisted in `localStorage`
+- **Responsive UI** with reusable components (cards, rating, filters)
+
+### Getting started
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+3. Open `http://localhost:3000` in your browser.
+
+### Scripts
+- `npm run dev`: Start Next.js in development
+- `npm run build`: Production build
+- `npm run start`: Start production server
+- `npm run lint`: Run ESLint
+
+### Configuration
+- API base URL is configurable via `NEXT_PUBLIC_API_URL` (defaults to `https://fakestoreapi.com`).
+  - File: `app/config/config.ts`
+  - Next.js image domains include `fakestoreapi.com` (see `next.config.ts`).
+
+Example `.env.local`:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_API_URL=https://fakestoreapi.com
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Project structure (high-level)
+```
+app/
+  components/            # Reusable UI components (cards, navbar, rating, etc.)
+  lib/
+    api.ts               # API client and typed fetch helpers
+    types.ts             # Shared TypeScript types
+  config/config.ts       # App config (API base URL)
+  store/cartStore.ts     # Zustand store for cart (persisted)
+  cart/page.tsx          # Cart page
+  product/[id]/page.tsx  # Product details page
+  page.tsx               # Home page / product explorer
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### API usage
+- `getProducts()` → `GET /products`
+- `getProduct(id)` → `GET /products/:id`
+- Errors are normalized via a custom `ApiError` (see `app/lib/api.ts`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Cart behavior
+- Items are stored as `Product` entries in the array-like cart.
+- Derived helpers: total price and quantity.
+- Persistence key: `cart` in `localStorage` (see `persist` middleware config).
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Development notes
+- UI images must be served from approved domains (`next.config.ts`).
+- When changing API base URL, update `.env.local` and restart the dev server.
+- Keep components presentational and pull data via the `lib/api` functions.
