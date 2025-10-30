@@ -1,15 +1,18 @@
 "use client";
-import { useState } from "react";
-const Filter = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedPrice, setSelectedPrice] = useState<string>("");
-  const categories = [
-    { id: 1, name: "Electronics" },
-    { id: 2, name: "Clothing" },
-    { id: 3, name: "Books" },
-    { id: 4, name: "Furniture" },
-    { id: 5, name: "Other" },
-  ];
+interface FilterProps {
+  categories: string[];
+  selectedCategory: string;
+  selectedPrice: string;
+  onCategoryChange: (category: string) => void;
+  onPriceChange: (priceRange: string) => void;
+}
+const Filter = ({
+  categories,
+  selectedCategory,
+  selectedPrice,
+  onCategoryChange,
+  onPriceChange,
+}: FilterProps) => {
   const prices = [
     { id: 1, name: "0-100" },
     { id: 2, name: "100-200" },
@@ -18,17 +21,37 @@ const Filter = () => {
     { id: 5, name: "400-500" },
   ];
   return (
-    <div className="filter flex-col items-center justify-between">
-      <div>CATEGORIES</div>
-      <div className="flex flex-col items-center justify-between">
-        {categories.map((category) => (
-          <div key={category.id}>{category.name}</div>
+    <div className="filter flex-col items-start justify-between mt-10">
+      <div className="text-medium font-inter font-medium">CATEGORIES</div>
+      <div className="flex flex-col items-start justify-between">
+        {categories.map((category: string) => (
+          <div
+            key={category}
+            onClick={() =>
+              onCategoryChange(selectedCategory === category ? "" : category)
+            }
+            className={`${
+              selectedCategory === category ? "text-black" : "text-gray-500"
+            } cursor-pointer`}
+          >
+            {category}
+          </div>
         ))}
       </div>
-      <div>PRICE</div>
+      <div className="text-medium font-inter font-medium mt-6">PRICE</div>
       <div>
         {prices.map((price) => (
-          <div key={price.id}>{price.name}</div>
+          <div
+            key={price.id}
+            onClick={() =>
+              onPriceChange(selectedPrice === price.name ? "" : price.name)
+            }
+            className={`${
+              selectedPrice === price.name ? "text-black" : "text-gray-500"
+            } cursor-pointer`}
+          >
+            {price.name}
+          </div>
         ))}
       </div>
     </div>
